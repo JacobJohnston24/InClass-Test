@@ -1,3 +1,4 @@
+import { userInfo } from 'os';
 import { AppDataSource } from '../dataSource';
 import { User } from '../entities/User';
 
@@ -36,4 +37,35 @@ async function getUsersByViews(minViews: number): Promise<User[]> {
   return users;
 }
 
-export { addUser, getUserByEmail, getUserById, getUsersByViews };
+async function incrementProfileViews(userData: User): Promise<User> {
+  const updatedUser = userData;
+  updatedUser.profileViews += 1;
+  await userRepository
+  .createQueryBuilder()
+  .update(User)
+  .set({ profileViews: updatedUser.profileViews })
+  .where({ userId: updatedUser.userId })
+  .execute();
+  return updatedUser;
+  }
+
+  async function resetAllUnverifiedProfileViews(): Promise<void> {
+    await userRepository
+    .createQueryBuilder()
+    .update(User)
+    .set({ profileViews: 0 })
+    .where('unverified <> true')
+    .execute();
+    }
+
+async function updateEmailAddress(userId: string, newEmail: string): Promise<void> {
+  const user = await getUserById(userId);
+  await userRepository
+  .createQueryBuilder()
+  .update(User)
+  .set({ email : newEmail })
+  .where({ email : user?.email })
+  .execute();
+}
+
+export { addUser, getUserByEmail, getUserById, getUsersByViews, incrementProfileViews, resetAllUnverifiedProfileViews, updateEmailAddress };
