@@ -11,9 +11,9 @@ type AuthRequest = {
 
 type UserIdParam = {
   userId: string;
-}
+};
 
 type NewEmailBody = {
   userId: string;
   newEmail: string;
-}
+};

@@ -1,4 +1,4 @@
-import { userInfo } from 'os';
+// import { userInfo } from 'os';
 import { AppDataSource } from '../dataSource';
 import { User } from '../entities/User';
 
@@ -59,12 +59,11 @@ async function incrementProfileViews(userData: User): Promise<User> {
     }
 
 async function updateEmailAddress(userId: string, newEmail: string): Promise<void> {
-  const user = await getUserById(userId);
   await userRepository
   .createQueryBuilder()
   .update(User)
   .set({ email : newEmail })
-  .where({ email : user?.email })
+  .where({ userId : userId })
   .execute();
 }
 
